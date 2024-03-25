@@ -6,6 +6,22 @@ from sklearn.metrics import (
     recall_score,
 )
 import pandas as pd
+import random
+import os
+import numpy as np
+
+
+def seed_everything(seed):
+    '''
+    [description]
+    seed 값을 고정시키는 함수
+
+    [arguments]
+    seed : seed 값
+    '''
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
 
 
 def als_proba(als_rec: dict, dataset: pd.DataFrame, weight: float) -> list:
@@ -38,6 +54,10 @@ def proba_to_target(pred_proba: list, threshold=0.5, als_pred=None) -> list:
     threshold : 임계값
     als_pred : ALS 모델의 확률값
     '''
+
+    if not als_pred:
+        als_pred = [0] * len(pred_proba)
+        
     new_pred = []
     for result, als_result in zip(pred_proba, als_pred):
         false_proba, true_proba = result

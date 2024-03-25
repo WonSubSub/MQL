@@ -15,6 +15,8 @@ def str_value_preprocess(data: str) -> str:
     '''
     if pd.isna(data):
         return data
+    elif type(data)==int:
+        return data
     return ''.join(data.lower().replace('/', '').replace('-', '').replace('_', '').replace('.', '').split())
 
 
@@ -56,11 +58,10 @@ def preprocess_categorical(dataset: pd.DataFrame,
     '''
     if is_train:
         mapping_values=defaultdict(list)
-        mapping_values['customer_type'] = ['endcustomer', 'specifier/influencer', 'channelpartner', 'servicepartner', 'solutionecopartner']
-        mapping_values['customer_position'] = ['manager', 'ceofounder', 'director', 'associateanalyst', 'partner', 'entrylevel', 'clevelexecutive', 'intern', 'vicepresident', 'trainee']
-        mapping_values['expected_timeline'] = ['lessthan3months', '3months~6months', 'morethanayear', '6months~9months', '9months~1year']
-
-        for column in categorial_columns:        
+        mapping_values['customer_type'] = ['endcustomer', 'specifierinfluencer', 'channelpartner', 'servicepartner', 'solutionecopartner', 'others']
+        mapping_values['customer_position'] = ['manager', 'ceofounder', 'director', 'associateanalyst', 'partner', 'entrylevel', 'clevelexecutive', 'intern', 'vicepresident', 'trainee', 'others']
+        mapping_values['expected_timeline'] = ['lessthan3months', '3months~6months', 'morethanayear', '6months~9months', '9months~1year', 'others']
+        for column in categorial_columns:
             dataset[column] = dataset[column].apply(lambda x: str_value_preprocess(x))
 
             if not mapping_values[column]:
@@ -71,18 +72,21 @@ def preprocess_categorical(dataset: pd.DataFrame,
                 mapping_values[column] = list(value_for_map)
                 # else:
                     # mapping_values[column] = list(dataset[column].unique())
-
-            dataset[column] = dataset[column].apply(lambda x: 'others' if x in mapping_values[column] else x)
+            
+            dataset[column] = dataset[column].apply(lambda x: x if x in mapping_values[column] else 'others')
             dataset[column] = dataset[column].apply(lambda x: 'others' if x in ['other', 25096] else x)
 
-            column_maps[column] = {v:i for i,v in enumerate(mapping_values[column])}
+            column_maps[column] = {v:i for i,v in enumerate(dataset[column].unique())}
             dataset[column] = dataset[column].map(column_maps[column])
 
     else:
         for column in categorial_columns:
             dataset[column] = dataset[column].apply(lambda x: str_value_preprocess(x))
-            dataset[column] = dataset[column].map(column_maps[column])
-    
+            if 'others' in column_maps[column].keys():
+                dataset[column] = dataset[column].map(column_maps[column]).fillna(column_maps[column]['others'])
+            else:
+                dataset[column] = dataset[column].map(column_maps[column])
+            
     return dataset, column_maps
 
 
@@ -110,8 +114,7 @@ def preprocess_continuous(dataset: pd.DataFrame,
         dataset['lead_desc_length'] = dataset['lead_desc_length'].apply(lambda x: preprocess_ldlen(x, med))
 
         for column in continuous_columns:
-            dataset[column].fillna(0, inplace=True)
-            dataset[column] = dataset[column].apply(lambda x: x+1)
+            dataset[column] = dataset[column].fillna(0).apply(lambda x: x+1)
 
             dataset[column], op_lambda = boxcox(dataset[column])
             optimal_lambdas[column] = op_lambda
@@ -125,8 +128,7 @@ def preprocess_continuous(dataset: pd.DataFrame,
         dataset['lead_desc_length'] = dataset['lead_desc_length'].apply(lambda x: preprocess_ldlen(x, med))
 
         for column in continuous_columns:
-            dataset[column].fillna(0, inplace=True)
-            dataset[column] = dataset[column].apply(lambda x: x+1)
+            dataset[column] = dataset[column].fillna(0).apply(lambda x: x+1)
 
             dataset[column] = boxcox(dataset[column], lmbda=optimal_lambdas[column])
         
@@ -146,6 +148,7 @@ def select_columns(dataset: pd.DataFrame) -> pd.DataFrame:
     dataset : 데이터셋
     '''
     dataset = dataset.drop(columns=[
+                              'bant_submit',
                               # 'business_unit',
                               # 'inquiry_type',
                               # 'customer_position',
@@ -157,18 +160,18 @@ def select_columns(dataset: pd.DataFrame) -> pd.DataFrame:
                               # 'product_category',
                               'product_subcategory',
                               'product_modelname',
-                              # 'customer_idx',
+                            #   'customer_idx',
                               # 'customer_job',
                               # 'lead_owner',
                               # 'budget',
-                              'customer_type',
+                            #   'customer_type',
                               ])
     
     return dataset
 
 
-def preprocess_dataset(args):
-        train_set, test_set = select_columns(args.train_set), select_columns(args.test_set)
+def preprocess_dataset(args, train_set, test_set):
+        train_set, test_set = select_columns(train_set), select_columns(test_set)
 
         all_columns = train_set.columns
         continuous_columns = args.continuous_columns
