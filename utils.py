@@ -9,6 +9,7 @@ import pandas as pd
 import random
 import os
 import numpy as np
+from collections import deque
 
 
 def seed_everything(seed):
@@ -69,7 +70,7 @@ def proba_to_target(pred_proba: list, threshold=0.5, als_pred=None) -> list:
     return new_pred
 
 
-def get_clf_eval(y_test, y_pred) -> [float, float]:
+def get_clf_eval(y_test: list, y_pred: list) -> [float, float]:
     '''
     [description]
     오차행렬, 정확도, precision, recall, f1_score을 구하는 함수
@@ -84,10 +85,33 @@ def get_clf_eval(y_test, y_pred) -> [float, float]:
     recall = recall_score(y_test, y_pred)
     F1 = f1_score(y_test, y_pred, labels=[True, False])
 
-    print("오차행렬:\n", confusion)
-    print("\n정확도: {:.4f}".format(accuracy))
-    print("정밀도: {:.4f}".format(precision))
-    print("재현율: {:.4f}".format(recall))
-    print("F1: {:.4f}".format(F1))
+    # print("오차행렬:\n", confusion)
+    # print("\n정확도: {:.4f}".format(accuracy))
+    # print("정밀도: {:.4f}".format(precision))
+    # print("재현율: {:.4f}".format(recall))
+    # print("F1: {:.4f}".format(F1))
 
     return F1, recall
+
+
+def ensemble(dataset1: pd.DataFrame, dataset2: pd.DataFrame) -> pd.DataFrame:
+    dataset1.sort_values(by='idx', inplace=True)
+    dataset2.sort_values(by='idx', inplace=True)
+
+    pred1, pred2 = list(dataset1['is_converted']), deque(dataset2['is_converted'])
+    id1, id2 = list(dataset1['idx']), deque(dataset2['idx'])
+
+    print(f'Dataset1 True Count : {sum(pred1)}, Dataset2 True count : {sum(pred2)}')
+    for idx, z in enumerate(zip(id1, pred1)):
+        id, target = z
+        if (id == id2[0]):
+            pred1[idx] = any([pred1[idx], pred2[0]])
+            pred2.popleft()
+            id2.popleft()
+        if not id2:
+            break
+    print(f'Total True Count After Ensemble : {sum(pred1)}')
+
+    dataset1['is_converted'] = pred1
+
+    return dataset1
