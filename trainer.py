@@ -9,7 +9,7 @@ from collections import defaultdict
 
 
 def train_stratifiedkfold(args, train_set):
-    X, Y = train_set.drop(columns=['is_converted']), train_set['is_converted']
+    X, Y = train_set.drop(columns=['is_converted', 'idx']), train_set['is_converted']
 
     f1_scores = defaultdict(list)
     recall_scores = defaultdict(list)
@@ -48,7 +48,7 @@ def train_stratifiedkfold(args, train_set):
         print(f'{key} : ({f1_mean:.3f}, {recall_mean:.3f})')
 
         if (f1_mean*2 + recall_mean)/3 > best_f1_recall:
-            best_f1_recall = max(best_f1_recall, (f1_mean*2 + recall_mean)/3)
+            best_f1_recall = max(best_f1_recall, (f1_mean + recall_mean)/2)
             best_threshold = key
     
     print(f'------------ Best Threshold = {best_threshold} --------------')
@@ -57,8 +57,9 @@ def train_stratifiedkfold(args, train_set):
 
 
 def train_full_dataset(args, train_set, test_set, best_threshold):
-    X, Y = train_set.drop(columns=['is_converted']), train_set['is_converted']
-    X_test, Y_test = test_set.drop(columns=['is_converted']), test_set['is_converted']
+    X, Y = train_set.drop(columns=['is_converted', 'idx']), train_set['is_converted']
+    X_test, Y_test = test_set.drop(columns=['is_converted', 'idx']), test_set['is_converted']
+
     f1_scores = defaultdict(list)
     recall_scores = defaultdict(list)
 
