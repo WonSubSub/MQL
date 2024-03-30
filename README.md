@@ -22,6 +22,8 @@ summary {
 <details><summary>Dataset</summary>
 
 - __Categorical columns__
+
+
 | Column Name  | Description | dType  | Null_percentage  |
 |:-------------:|:-------------:|:-------------:|:-------------:|
 | business_unit |사업부| str| 0% |
@@ -42,6 +44,8 @@ summary {
 
 
 - __Numerical columns__
+
+  
 | Column Name  | Description | dType  | Null_percentage  |
 |:-------------:|:-------------:|:-------------:|:-------------:|
 |bant_submit |MQL 정보의 BANT 가중치|float| 0% |
@@ -50,6 +54,8 @@ summary {
 
 
 - __Target column__
+
+
 | Column Name  | Description | dType  | True_percentage  |
 |:-------------:|:-------------:|:-------------:|:-------------:|
 |is_converted |영업 전환 성공 여부|bool| 8.2% |
