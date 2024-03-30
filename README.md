@@ -5,6 +5,7 @@
     &xrarr; 모델이 예측하기 어려운 잠재 고객의 특징 파악 
 ---
 
+
 <style>
 /* 토글 전체 크기 조절 */
 details {
@@ -17,6 +18,7 @@ summary {
   font-weight: bold;
 }
 </style>
+
 
 
 <details><summary>Dataset</summary>
