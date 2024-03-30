@@ -5,22 +5,6 @@
     &xrarr; 모델이 예측하기 어려운 잠재 고객의 특징 파악 
 ---
 
-
-<style>
-/* 토글 전체 크기 조절 */
-details {
-  width: 100%;
-}
-
-/* 토글 제목 크기 조절 */
-summary {
-  font-size: 20px;
-  font-weight: bold;
-}
-</style>
-
-
-
 <details><summary>Dataset</summary>
 
 - __Categorical columns__
