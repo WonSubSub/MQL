@@ -18,7 +18,7 @@ def main(args):
     with open(f'./result/recall/{args.train_set.split('.')[0]}_recall_scores.pkl', 'wb') as f:
         pickle.dump(recall_scores, f)
 
-    val_f1_scores, val_recall_scores, pred = train_full_dataset(args, train_set=train_set, test_set=test_set, best_threshold=best_threshold)
+    val_f1_scores, val_recall_scores, pred = train_full_dataset(args, train_set=train_set, test_set=test_set, best_threshold=0.25)
 
     if not args.is_inference:
         with open(f'./result/f1_score/{args.test_set.split('.')[0]}_f1_scores.pkl', 'wb') as f:
@@ -27,7 +27,7 @@ def main(args):
             pickle.dump(val_recall_scores, f)
 
     test_set['is_converted'] = pred
-    test_set.to_csv(f'./result/csv/{best_threshold}_{args.test_set}', index=None)
+    test_set.to_csv(f'./result/csv/0.25_{args.test_set}', index=None)
     print(f"Result File Made : result_{args.test_set}")
 
 

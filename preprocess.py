@@ -162,9 +162,9 @@ def select_columns(dataset: pd.DataFrame) -> pd.DataFrame:
                               'product_modelname',
                             #   'customer_idx',
                               # 'customer_job',
-                              # 'lead_owner',
+                            #   'lead_owner',
                               # 'budget',
-                            #   'customer_type',
+                              'customer_type',
                               ])
     
     return dataset
