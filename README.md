@@ -95,14 +95,20 @@ __&xrarr; lead_owner 컬럼은 학습에 활용 X__ _(실제로 학습에 활용
 >>--> lead_desc_length 값이 3인 데이터들은 영업 전환 성공 비율이 주위 데이터에 비해 높은 편  
 --> lead_desc_length 값이 14인 데이터들은 영업 전환 성공 비율이 매우 낮음  
  __&xrarr; lead_desc_length 컬럼의 결측치가 전혀 없는 것을 고려하여 값이 정확한 특징이 파악되지 않는 3, 14 값을 결측치 취급__ _(median 값으로 대체)_  
->  
+>
+><br>
+
 >lead_desc_length의 분포 확인  
-![lead_desc_length3](/img/lead_desc_length3.png)  
+>
+>![lead_desc_length3](/img/lead_desc_length3.png)  
 >>--> 데이터가 왼쪽으로 쏠림  
 __&xrarr; 분포 변환 적용 고려__  
->  
+>
+><br>
+
 >value_counts 값이 20개 이상인 데이터들의 lead_desc_length(x) 별 영업 성공 비율(y) 분포 확인  
-![lead_desc_length4](/img/lead_desc_length4.png)  
+>
+>![lead_desc_length4](/img/lead_desc_length4.png)  
 >> --> lead_desc_length와 영업 전환 성공률은 어느정도 비례 관계가 있는 것으로 판단 가능
 
 
