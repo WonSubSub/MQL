@@ -170,17 +170,25 @@ def select_columns(dataset: pd.DataFrame) -> pd.DataFrame:
     return dataset
 
 
-def preprocess_dataset(args, train_set, test_set):
-        train_set, test_set = select_columns(train_set), select_columns(test_set)
+def preprocess_dataset(args, train_set: pd.DataFrame, test_set: pd.DataFrame) -> [pd.DataFrame, pd.DataFrame]:
+    '''
+    [description]
+    학습에 활용할 데이터셋의 전체 전처리를 처리하는 함수
 
-        all_columns = train_set.columns
-        continuous_columns = args.continuous_columns
-        categorical_columns = [col for col in all_columns if col not in continuous_columns]
+    [arguments]
+    train_set : 학습 데이터셋
+    test_set : 평가 데이터셋
+    '''
+    train_set, test_set = select_columns(train_set), select_columns(test_set)
 
-        train_set, column_maps = preprocess_categorical(train_set, categorical_columns, is_train=True, cnt=args.cnt)
-        test_set, _= preprocess_categorical(test_set, categorical_columns, is_train=False, cnt=args.cnt, column_maps=column_maps)
+    all_columns = train_set.columns
+    continuous_columns = args.continuous_columns
+    categorical_columns = [col for col in all_columns if col not in continuous_columns]
 
-        train_set, optimal_lambdas, scaler = preprocess_continuous(train_set, continuous_columns, is_train=True)
-        test_set, _, _ = preprocess_continuous(test_set, continuous_columns, is_train=False, optimal_lambdas=optimal_lambdas, scaler=scaler)
+    train_set, column_maps = preprocess_categorical(train_set, categorical_columns, is_train=True, cnt=args.cnt)
+    test_set, _= preprocess_categorical(test_set, categorical_columns, is_train=False, cnt=args.cnt, column_maps=column_maps)
 
-        return train_set, test_set
+    train_set, optimal_lambdas, scaler = preprocess_continuous(train_set, continuous_columns, is_train=True)
+    test_set, _, _ = preprocess_continuous(test_set, continuous_columns, is_train=False, optimal_lambdas=optimal_lambdas, scaler=scaler)
+
+    return train_set, test_set

@@ -95,6 +95,14 @@ def get_clf_eval(y_test: list, y_pred: list) -> [float, float]:
 
 
 def ensemble(dataset1: pd.DataFrame, dataset2: pd.DataFrame) -> pd.DataFrame:
+    '''
+    [description]
+    서로 다른 두 모델의 예측값에서 하나라도 True가 나오면 True를 반환하는 앙상블 함수
+
+    [arguments]
+    dataset1 : customer_type 컬럼을 학습에 활용하지 않은 전체 데이터셋에 대한 예측값 (약 5.3만 개)
+    dataset2 : customer_type 컬럼을 학습에 활용하고 해당 값이 결측치가 아닌 데이터셋에 대한 예측값 (약 1.3만 개)
+    '''
     dataset1.sort_values(by='idx', inplace=True)
     dataset2.sort_values(by='idx', inplace=True)
 
