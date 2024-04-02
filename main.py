@@ -40,24 +40,28 @@ if __name__ == "__main__":
     ############### BASIC OPTION
     arg('--train_set', type=str, default='train_set.csv')
     arg('--test_set', type=str, default='val_set.csv')
-
     arg('--data_path', type=str, default='data/')
-    # arg('--saved_model_path', type=str, default='./saved_models')
     arg('--seed', type=int, default=42)
-    arg('--is_inference', type=bool, default=False)
+    # arg('--saved_model_path', type=str, default='./saved_models')
+
+
+    ############### PREPROCESSING OPTION
+    arg('--continuous_columns', type=list, default=['lead_desc_length', 'historical_existing_cnt'], help='분포 변환과 스케일링을 적용할 연속형 컬럼')
+    arg('--cnt', type=int, default=2, help='임베딩을 하기 위해 넘어야하는 최소 value_counts값')
+    arg('--shuffle', type=bool, default=True)
+    
 
     ############### TRAINING OPTION
-    arg('--continuous_columns', type=list, default=['lead_desc_length', 'historical_existing_cnt'])
     arg('--n_splits', type=int, default=5)
-    arg('--shuffle', type=bool, default=True)
+    arg('--is_inference', type=bool, default=False)
     arg('--n_estimators', type=int, default=500)
     arg('--learning_rate', type=float, default=0.03)
     arg('--num_leaves', type=int, default=100)
     arg('--n_jobs', type=int, default=-1)
     arg('--max_depth', type=float, default=22)
     arg('--boost_from_average', type=bool, default=False)
-    arg('--thresholds', type=float, default=[0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2 ,0.15, 0.1])
-    arg('--cnt', type=int, default=2)
+    arg('--thresholds', type=float, default=[0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2 ,0.15, 0.1], help='모델의 예측값에 활용되는 임계값')
+    
 
     args = parser.parse_args()
     main(args)
