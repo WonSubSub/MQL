@@ -119,7 +119,11 @@ __&xrarr; 분포 변환 적용 고려__
 
 <details><summary>Validation Set</summary>
 
-* .
+<br>
+
+![validation_set1](/img/validation_set1.png)  
+
+<br>
 
 </details>
 
