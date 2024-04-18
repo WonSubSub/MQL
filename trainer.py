@@ -47,8 +47,8 @@ def train_stratifiedkfold(args, train_set):
         recall_mean = sum(recall_scores[key]) / (i+1)
         print(f'{key} : ({f1_mean:.3f}, {recall_mean:.3f})')
 
-        if (f1_mean*2 + recall_mean)/3 > best_f1_recall:
-            best_f1_recall = max(best_f1_recall, (f1_mean + recall_mean)/2)
+        if (f1_mean*3 + recall_mean)/4 > best_f1_recall:
+            best_f1_recall = max(best_f1_recall, (f1_mean*3 + recall_mean)/4)
             best_threshold = key
     
     print(f'------------ Best Threshold = {best_threshold} --------------')
