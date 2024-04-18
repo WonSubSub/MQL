@@ -140,7 +140,44 @@ __&xrarr; 분포 변환 적용 고려__
 
 <details><summary>Preprocessing</summary>
 
-* .
+
+### 범주형 컬럼
+* __String Value Preprocess__ __&xrarr;__ _String 형식의 데이터를 통일_  
+Ex) End / Customer, End-customer, end_Customer --> endcostumer   
+![str_value_preprocess](/img/str_value_preprocess.png)  
+
+<br>  
+<br>
+
+
+* __Encoding__
+    * [customer_type, customer_position, expected_timeline] 컬럼    
+    실제 구매 페이지에서 활용되는 항목만 Encoding, 나머지는 Others 취급  
+    ![encoding_help](/img/encoding_help.png)  <br>  <br>
+    * [customer_idx] 컬럼  
+    ![pre_customer_idx](/img/pre_customer_idx.png)  <br>  <br>
+    * 나머지 컬럼  
+    customer_idx 컬럼과 마찬가지로 value_counts 값이 일정 값 이상인 값들만 인코딩 진행  
+
+<br>
+
+
+### 수치형(연속형) 컬럼
+* __lead_desc_length 컬럼__  
+  ![pre_lead_desc_length1](/img/pre_lead_desc_length1.png)  
+    __&xrarr;__ 기존에 이상치로 판단한 3과 14를 결측치로 취급 (median 값으로 대체)  
+<br>
+<br>
+
+  ![pre_lead_desc_length2](/img/pre_lead_desc_length2.png)  
+    __&xrarr;__ Boxcox를 이용한 분포 변환  
+
+<br>
+<br>
+
+* __historical_existing_cnt__   
+lead_desc_length 컬럼과 마찬가지로 분표 변환  
+
 
 </details>
 
@@ -148,7 +185,41 @@ __&xrarr; 분포 변환 적용 고려__
 
 <details><summary>Modeling</summary>
 
-* .
+### EDA시 얻은 정보를 바탕으로 서로 다른 모델 두 가지 구축 (customer_type컬럼 학습 여부)  
+
+<br>
+
+* __customer_type 컬럼을 학습하지 않는 Train Model__  
+Threshold 별로 F1-score, Recall 계산 후 3*F1-score + Recall 값이 가장 큰 Threshold로 Val_Set을 예측    
+![modeling1](/img/modeling1.png)
+
+<br>
+<br>
+
+
+각 Threshold 별 Train_Set의 지표값 평균과 Val_Set의 지표값 시각화  
+![modeling2](/img/modeling2.png)  
+__&xrarr;__ _Best Threshold : 0.15, 이때 F1-score : 0.563 Recall : 0.769_  
+__&xrarr;__ __val_set_result.csv 저장__  
+
+<br>  
+<br>
+<br>
+
+
+* __customer_type 컬럼을 학습하는 CT_Train Model__  
+Threshold 별로 F1-score, Recall 계산 후 3*F1-score + Recall 값이 가장 큰 Threshold로 CT_Val_Set을 예측  
+![modeling3](/img/modeling3.png)
+
+<br>
+<br>
+
+
+각 Threshold 별 Train_Set의 지표값 평균과 Val_Set의 지표값 시각화  
+![modeling4](/img/modeling4.png)  
+__&xrarr;__ _Best Threshold : 0.2, 이때 F1-score : 0.593 Recall : 0.672_  
+__&xrarr;__ __ct_val_set_result.csv 저장__  
+
 
 </details>
 
@@ -156,7 +227,20 @@ __&xrarr; 분포 변환 적용 고려__
 
 <details><summary>Ensemble</summary>
 
-* .
+
+### 영업 전환 가능성이 조금이라도 있는 고객을 찾기 위해 두 가지 결과 중 하나라도 True면 True로 예측  
+![ensemble1](/img/ensemble1.png)  
+
+
+<br>
+<br>
+<br>
+
+
+* 최종 예측 값에 대한 평가 지표  
+![ensemble2](/img/ensemble2.png)  
+__&xrarr;__ __기존 F1-score : 0.563, Recall : 0.769 에서 F1-score:0.566, Recall : 0.800으로 F1,Recall값 모두 상승__ 
+
 
 </details>
 
